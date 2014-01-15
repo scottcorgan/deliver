@@ -8,7 +8,8 @@ var PORT = 9876;
 
 test('streams a static file', function (t) {
   var server = createServer(function (req, res) {
-    req.url = '/test/fixtures/testfile1.txt';
+    req.url = __dirname + '/fixtures/testfile1.txt';
+    console.log(req.url);
     deliver(req).pipe(res);
   }, function (err) {
     request.get('http://localhost:' + PORT, function (err, resp, body) {
@@ -38,7 +39,7 @@ test('serves static files with root', function (t) {
 
 test('serves static with mime type', function (t) {
   var server = createServer(function (req, res) {
-    req.url = '/test/fixtures/testfile1.txt';
+    req.url = __dirname + '/fixtures/testfile1.txt';
     deliver(req).pipe(res);
   }, function (err) {
     request.get('http://localhost:' + PORT, function (err, resp, body) {
