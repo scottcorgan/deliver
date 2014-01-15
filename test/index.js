@@ -3,6 +3,10 @@ var senator = require('../');
 var test = require('tape');
 var through = require('through');
 
+// req.url = '/asdf.html';
+// senator(req).pipe(res);
+
+
 test('serves static files', function (t) {
   var res = createResponse();
   var filename = 'test/testfile1.txt';

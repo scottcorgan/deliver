@@ -1,5 +1,5 @@
 var fs = require('fs');
-var mime = require('mime');
+var send = require('send');
 var path = require('path');
 var join = path.join;
 var normalize = path.normalize;
