@@ -1,77 +1,81 @@
 var fs = require('fs');
 var senator = require('../');
 var test = require('tape');
-var through = require('through');
+var connect = require('connect');
+var http = require('http');
+var request = require('request');
+var PORT = 9876;
 
 // req.url = '/asdf.html';
 // senator(req).pipe(res);
 
-
-test('serves static files', function (t) {
-  var res = createResponse();
-  var filename = 'test/testfile1.txt';
-  fs.writeFileSync(filename,'testfile1');
-  
-  senator(filename).pipe(res);
-  
-  streamBuffer(res, function (err, contents) {
-    t.equal(contents, 'testfile1', 'streamed file');
-    fs.unlinkSync(filename);
-    t.end();
+test('streams a static file', function (t) {
+  var server = createServer(function (req, res) {
+    req.url = '/test/fixtures/testfile1.txt';
+    senator(req).pipe(res);
+  }, function (err) {
+    request.get('http://localhost:' + PORT, function (err, resp, body) {
+      t.equal(resp.statusCode, 200, 'successful response');
+      t.equal(body, 'testfile1', 'streamed file');
+      server.close();
+      t.end();
+    });
   });
 });
 
 test('serves static files with root', function (t) {
-  var res = createResponse();
-  var filename = 'test/testfile2.txt';
-  fs.writeFileSync(filename, 'testfile2');
-  
-  senator('testfile2.txt', {
-    root: '/test'
-  }).pipe(res);
-  
-  streamBuffer(res, function (err, contents) {
-    t.equal(contents, 'testfile2', 'streamed file');
-    fs.unlinkSync(filename);
-    t.end();
+  var server = createServer(function (req, res) {
+    req.url = '/testfile1.txt';
+    senator(req, {
+      root: '/test/fixtures'
+    }).pipe(res);
+  }, function (err) {
+    request.get('http://localhost:' + PORT, function (err, resp, body) {
+      t.equal(resp.statusCode, 200, 'successful response');
+      t.equal(body, 'testfile1', 'streamed file');
+      server.close();
+      t.end();
+    });
   });
 });
 
 test('serves static with mime type', function (t) {
- var res = createResponse();
-   var filename = 'test/testfile3.txt';
-   fs.writeFileSync(filename,'testfile3');
-   
-   senator(filename).pipe(res);
-   
-   streamBuffer(res, function (err, contents) {
-     t.equal(contents, 'testfile3', 'streamed file');
-     t.equal(res['Content-Type'], 'text/plain', 'set mime type');
-     fs.unlinkSync(filename);
-     t.end();
-   });
+  var server = createServer(function (req, res) {
+    req.url = '/test/fixtures/testfile1.txt';
+    senator(req).pipe(res);
+  }, function (err) {
+    request.get('http://localhost:' + PORT, function (err, resp, body) {
+      t.equal(resp.headers['content-type'], 'text/plain; charset=UTF-8', 'correct mime type');
+      server.close();
+      t.end();
+    });
+  });
 });
 
-// test('handles file static file serving error');
-
-function streamBuffer (stream, callback) {
-  var contents = '';
-  
-  stream
-    .on('data', function (data) {
-      contents += data.toString();
-    })
-    .on('error', callback)
-    .on('end', function () {
-      callback(null, contents);
+test('servers a proxied remote file by url', function (t) {
+  var fileServer = createServer(function (req, res) {
+    res.setHeader('Content-Type', 'text/plain; charset=UTF-8');
+    fs.createReadStream('test/fixtures/testfile1.txt').pipe(res);
+  }, function () {
+    var server = createServer(function (req, res) {
+      req.url = 'http://localhost:9875/testfile1.txt';
+      senator(req).pipe(res);
+    }, function (err) {
+      request.get('http://localhost:' + PORT, function (err, resp, body) {
+        
+        t.equal(resp.headers['content-type'], 'text/plain; charset=UTF-8', 'correct mime type');
+        t.equal(body, 'testfile1', 'streamed remote file');
+        
+        server.close();
+        fileServer.close();
+        t.end();
+      });
     });
-};
+  }, 9875);
+});
 
-function createResponse () {
-  var res = through();
-  res.setHeader = function (header, value) {
-    res[header] = value;
-  };
-  
-  return res;
+function createServer (testMiddleware, callback, _port) {
+  var app = connect();
+  app.use(testMiddleware);
+  return http.createServer(app).listen(_port || PORT, callback);
 }

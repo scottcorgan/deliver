@@ -1,29 +1,22 @@
-var fs = require('fs');
 var send = require('send');
 var path = require('path');
+var defaults = require('defaults');
+var request = require('request');
+var isUrl = require('is-url');
+
 var join = path.join;
 var normalize = path.normalize;
-
-var defaults = {
+var defaultOptions = {
   root: ''
 };
 
-var senator = function (pathname) {
-  var options = arguments[1] || defaults;
-  var filepath = join(
-    process.cwd(),
-    options.root,
-    normalize(pathname)
-  );
-  var fileStream = fs.createReadStream(filepath);
+var senator = function (req) {
+  if (isUrl(req.url)) return request(req.url)
+    
+  var options = defaults(arguments[1], defaultOptions);
+  var root = join(process.cwd(), normalize(options.root));
   
-  return {
-    on: function (evt, callback) {},
-    pipe: function (res) {
-      res.setHeader('Content-Type', mime.lookup(filepath));
-      return fileStream.pipe(res);
-    }
-  }
+  return send(req, req.url).root(root)
 };
 
 module.exports = senator;
