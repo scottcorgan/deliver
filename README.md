@@ -8,9 +8,9 @@ Serve static files locally OR remotely
 npm install senator --save
 ```
 
-## Usate
+## Usage
 
-### Local file
+#### Local file
 
 ```js
 var senator = require('senator');
@@ -23,7 +23,7 @@ http.createServer(function (req, res) {
 }).listen(3000);
 ```
 
-### Remove file (proxy)
+#### Remove file (proxy)
 
 ```js
 var senator = require('senator');
@@ -37,6 +37,8 @@ http.createServer(function (req, res) {
 ```
 
 ## senator(path[, options])
+
+Returns a stream
 
 * `path` - the path, relative or an http url, of the file to server
 * `options`
