@@ -12,7 +12,7 @@ npm install senator --save
 
 ### Local file
 
-``js
+```js
 var senator = require('senator');
 var http = require('http');
 
@@ -25,7 +25,7 @@ http.createServer(function (req, res) {
 
 ### Remove file (proxy)
 
-``js
+```js
 var senator = require('senator');
 var http = require('http');
 
