@@ -24,7 +24,7 @@ test('serves static files with root', function (t) {
   var server = createServer(function (req, res) {
     req.url = '/testfile1.txt';
     deliver(req, {
-      root: '/test/fixtures'
+      root: __dirname + '/fixtures'
     }).pipe(res);
   }, function (err) {
     request.get('http://localhost:' + PORT, function (err, resp, body) {
