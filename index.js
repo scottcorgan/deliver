@@ -4,7 +4,7 @@ var request = require('request');
 var isUrl = require('is-url');
 
 var defaultOptions = {
-  root: process.cwd()
+  root: ''
 };
 
 var deliver = function (req) {
