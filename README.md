@@ -1,6 +1,6 @@
 # deliver
 
-Serve static files locally OR remotely. An "in between" helper that figures out what you really want.
+Deliver local and remote static files.
 
 ## Install
 
