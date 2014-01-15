@@ -1,0 +1,31 @@
+{
+  "name": "senator",
+  "version": "0.1.0",
+  "description": "Serve static files locally OR remotely",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scottcorgan/senator.git"
+  },
+  "keywords": [
+    "static",
+    "remote",
+    "files",
+    "serve"
+  ],
+  "author": "Scott Corgan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/scottcorgan/senator/issues"
+  },
+  "devDependencies": {
+    "tape": "~2.3.2",
+    "through": "~2.3.4"
+  },
+  "dependencies": {
+    "mime": "~1.2.11"
+  }
+}
