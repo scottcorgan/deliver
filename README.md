@@ -1,6 +1,6 @@
 # senator
 
-Serve static files locally OR remotely
+Serve static files locally OR remotely. An "in between" helper that figures out what you really want.
 
 ## Install
 
@@ -23,7 +23,7 @@ http.createServer(function (req, res) {
 }).listen(3000);
 ```
 
-#### Remove file (proxy)
+#### Remote file (proxy)
 
 ```js
 var senator = require('senator');
@@ -49,4 +49,4 @@ Returns a stream
 ```
 npm install
 npm test
-``
+```
