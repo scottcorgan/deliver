@@ -10,7 +10,7 @@ var defaultOptions = {
   root: ''
 };
 
-var senator = function (req) {
+var deliver = function (req) {
   if (isUrl(req.url)) return request(req.url)
     
   var options = defaults(arguments[1], defaultOptions);
@@ -19,4 +19,4 @@ var senator = function (req) {
   return send(req, req.url).root(root)
 };
 
-module.exports = senator;
+module.exports = deliver;

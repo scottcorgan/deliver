@@ -1,11 +1,11 @@
-# senator
+# deliver
 
 Serve static files locally OR remotely. An "in between" helper that figures out what you really want.
 
 ## Install
 
 ```
-npm install senator --save
+npm install deliver --save
 ```
 
 ## Usage
@@ -13,30 +13,30 @@ npm install senator --save
 #### Local file
 
 ```js
-var senator = require('senator');
+var deliver = require('deliver');
 var http = require('http');
 
 http.createServer(function (req, res) {
   // Conditionally set the request url
   req.url = '/some';
-  senator(req).pipe(res);
+  deliver(req).pipe(res);
 }).listen(3000);
 ```
 
 #### Remote file (proxy)
 
 ```js
-var senator = require('senator');
+var deliver = require('deliver');
 var http = require('http');
 
 http.createServer(function (req, res) {
   // Conditionally set the request url
   req.url = 'http://www.somewhere.com/somefile.html';
-  senator(req).pipe(res);
+  deliver(req).pipe(res);
 }).listen(3000);
 ```
 
-## senator(path[, options])
+## deliver(path[, options])
 
 Returns a stream
 
