@@ -1,6 +1,6 @@
 {
   "name": "deliver",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Deliver local and remote static files",
   "main": "index.js",
   "scripts": {
@@ -30,6 +30,6 @@
   "dependencies": {
     "send": "~0.1.4",
     "defaults": "~1.0.0",
-    "request": "~2.31.0"
+    "request": "~2.33.0"
   }
 }

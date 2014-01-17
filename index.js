@@ -8,7 +8,7 @@ var defaultOptions = {
 };
 
 var deliver = function (req) {
-  if (isUrl(req.url)) return request(req.url)
+  if (isUrl(req.url)) return request(req.url);
     
   var options = defaults(arguments[1], defaultOptions);
   req.url = path.join(options.root, req.url);
