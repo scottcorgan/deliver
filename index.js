@@ -2,6 +2,7 @@ var path = require('path');
 var send = require('send');
 var defaults = require('defaults');
 var request = require('request');
+var isUrl = require('is-url');
 
 var defaultOptions = {
   root: ''
@@ -15,10 +16,5 @@ var deliver = function (req) {
   
   return send(req, req.url);
 };
-
-function isUrl (str) {
-  var matcher = /^(ftp|https?):\/\/([^\s\.]+\.[^\s]{2,}|localhost[\:?\d]*)$/;
-  return matcher.test(str);
-}
 
 module.exports = deliver;
