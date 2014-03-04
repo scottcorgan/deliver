@@ -3,7 +3,6 @@ var send = require('send');
 var defaults = require('defaults');
 var request = require('request');
 var isUrl = require('is-url');
-var through = require('through');
 
 var defaultOptions = {
   statusCode: 200,
