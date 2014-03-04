@@ -3,15 +3,20 @@ var send = require('send');
 var defaults = require('defaults');
 var request = require('request');
 var isUrl = require('is-url');
+var through = require('through');
 
 var defaultOptions = {
+  statusCode: 200,
   root: ''
 };
 
 var deliver = function (req) {
-  if (isUrl(req.url)) return request(req.url);
-    
   var options = defaults(arguments[1], defaultOptions);
+  
+  if (isUrl(req.url)) return request(req.url).on('response', function (res) {
+    if (options.statusCode) res.statusCode = options.statusCode;
+  });
+  
   req.url = path.join(options.root, req.url);
   
   return send(req, req.url);

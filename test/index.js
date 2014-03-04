@@ -50,7 +50,7 @@ test('serves static with mime type', function (t) {
   });
 });
 
-test('servers a proxied remote file by url', function (t) {
+test('serves a proxied remote file by url', function (t) {
   var fileServer = createServer(function (req, res) {
     res.setHeader('content-type', 'text/plain; charset=UTF-8');
     fs.createReadStream('test/fixtures/testfile1.txt').pipe(res);
@@ -60,9 +60,33 @@ test('servers a proxied remote file by url', function (t) {
       deliver(req).pipe(res);
     }, function (err) {
       get('http://localhost:' + PORT, function (err, resp, body) {
+        t.equal(resp.statusCode, 200, '200 status code');
         t.equal(resp.headers['content-type'], 'text/plain; charset=UTF-8', 'correct mime type');
         t.equal(body, 'testfile1', 'streamed remote file');
         
+        server.close();
+        fileServer.close();
+        t.end();
+      });
+    });
+  }, 9875);
+});
+
+test('serves a proxied remote file with a custom response status code', function (t) {
+  var fileServer = createServer(function (req, res) {
+    fs.createReadStream('test/fixtures/testfile1.txt').pipe(res);
+  }, function () {
+    var server = createServer(function (req, res) {
+      req.url = 'http://localhost:9875/testfile1.txt';
+      res.statusCode = 404;
+      
+      deliver(req, {
+        statusCode: 404
+      }).pipe(res);
+      
+    }, function (err) {
+      get('http://localhost:' + PORT, function (err, resp, body) {
+        t.equal(resp.statusCode, 404, '404 status code');
         server.close();
         fileServer.close();
         t.end();
@@ -80,6 +104,5 @@ function createServer (testMiddleware, callback, _port) {
 
 function get (url, callback) {
   var body = '';
-  
   return request(url, callback);
 }

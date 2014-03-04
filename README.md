@@ -32,7 +32,9 @@ var http = require('http');
 http.createServer(function (req, res) {
   // Conditionally set the request url
   req.url = 'http://www.somewhere.com/somefile.html';
-  deliver(req).pipe(res);
+  deliver(req, {
+    statusCode: 404
+  }).pipe(res);
 }).listen(3000);
 ```
 
@@ -43,6 +45,7 @@ Returns a stream
 * `path` - the path, relative or an http url, of the file to server
 * `options`
   * `root` - set the root directory that holds the static files to serve
+  * `statusCode` - set the response status code. Overrides when proxying a remote file
   
 ## Run Tests
 
