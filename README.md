@@ -19,7 +19,9 @@ var http = require('http');
 http.createServer(function (req, res) {
   // Conditionally set the request url
   req.url = '/some';
+  
   deliver(req).pipe(res);
+  
 }).listen(3000);
 ```
 
@@ -32,9 +34,11 @@ var http = require('http');
 http.createServer(function (req, res) {
   // Conditionally set the request url
   req.url = 'http://www.somewhere.com/somefile.html';
+  
   deliver(req, {
     statusCode: 404
   }).pipe(res);
+  
 }).listen(3000);
 ```
 
