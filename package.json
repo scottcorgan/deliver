@@ -1,6 +1,6 @@
 {
   "name": "deliver",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Deliver local and remote static files",
   "main": "index.js",
   "scripts": {

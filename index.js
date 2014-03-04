@@ -14,6 +14,7 @@ var deliver = function (req) {
   
   if (isUrl(req.url)) return request(req.url).on('response', function (res) {
     if (options.statusCode) res.statusCode = options.statusCode;
+    if (options.contentType) res.headers['content-type'] = options.contentType;
   });
   
   req.url = path.join(options.root, req.url);

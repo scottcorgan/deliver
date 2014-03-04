@@ -95,6 +95,29 @@ test('serves a proxied remote file with a custom response status code', function
   }, 9875);
 });
 
+test('serves a proxied remote file with a custom content mime type', function (t) {
+  var fileServer = createServer(function (req, res) {
+    fs.createReadStream('test/fixtures/testfile1.txt').pipe(res);
+  }, function () {
+    var server = createServer(function (req, res) {
+      req.url = 'http://localhost:9875/testfile1.txt';
+      res.statusCode = 404;
+      
+      deliver(req, {
+        contentType: 'text/html'
+      }).pipe(res);
+      
+    }, function (err) {
+      get('http://localhost:' + PORT, function (err, resp, body) {
+        t.equal(resp.headers['content-type'], 'text/html', 'correct mime type');
+        server.close();
+        fileServer.close();
+        t.end();
+      });
+    });
+  }, 9875);
+});
+
 //
 function createServer (testMiddleware, callback, _port) {
   var app = connect();

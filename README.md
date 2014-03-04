@@ -49,7 +49,8 @@ Returns a stream
 * `path` - the path, relative or an http url, of the file to server
 * `options`
   * `root` - set the root directory that holds the static files to serve
-  * `statusCode` - set the response status code. Overrides when proxying a remote file
+  * `statusCode` - override the status code
+  * `contentType` - override the content type
   
 ## Run Tests
 
