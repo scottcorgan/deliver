@@ -1,6 +1,6 @@
 {
   "name": "deliver",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "Deliver local and remote static files",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,7 @@
     "tap-spec": "~0.1.3"
   },
   "dependencies": {
-    "send": "~0.1.4",
+    "send": "~0.3.0",
     "defaults": "~1.0.0",
     "request": "~2.33.0",
     "is-url": "~1.0.0"
