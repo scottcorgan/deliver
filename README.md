@@ -46,7 +46,7 @@ http.createServer(function (req, res) {
 
 Returns a stream almost identical to the [`send` module](https://www.npmjs.org/package/send). That means you can listen to the same events (i.e. *directory*, *error*, etc).
 
-* `path` - the path, relative or an http url, of the file to server
+* `req` - the request object
 * `options`
   * `root` - set the root directory that holds the static files to serve
   * `index` - set a custom index file. Pass `false` to disable or pass a string or array of strings for a custom index file.

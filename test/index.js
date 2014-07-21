@@ -126,6 +126,10 @@ test('serves a proxied remote file with a custom response status code', function
   }, 9875);
 });
 
+// test('passing in a file list will test for a file existence', function (t) {
+  
+// });
+
 // TODO: test that it proxies a directories index.html file
 
 test('serves a proxied remote file with a custom content mime type', function (t) {
