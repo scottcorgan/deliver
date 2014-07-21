@@ -17,7 +17,8 @@ var deliver = function (req) {
   if (isUrl(options.root)) {
     return request(urlJoin(options.root, req.url)).on('response', function (res) {
       if (options.statusCode) res.statusCode = options.statusCode;
-      if (options.contentType) res.headers['content-type'] = options.contentType || mime.lookup(req.url);
+      
+      res.headers['content-type'] = options.contentType || mime.lookup(req.url)
     });
   }
   
