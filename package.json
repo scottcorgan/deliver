@@ -1,6 +1,6 @@
 {
   "name": "deliver",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Deliver local and remote static files",
   "main": "index.js",
   "scripts": {
@@ -22,15 +22,17 @@
     "url": "https://github.com/scottcorgan/deliver/issues"
   },
   "devDependencies": {
-    "tape": "~2.3.2",
     "connect": "~2.12.0",
-    "request": "~2.31.0",
-    "tap-spec": "~0.2.0"
+    "request": "^2.36.0",
+    "tap-spec": "~0.2.0",
+    "tape": "~2.3.2"
   },
   "dependencies": {
-    "send": "~0.4.0",
     "defaults": "~1.0.0",
-    "request": "~2.36.0",
-    "is-url": "~1.1.0"
+    "fast-url-parser": "^1.0.6-0",
+    "is-url": "~1.1.0",
+    "mime-types": "^1.0.1",
+    "request": "^2.36.0",
+    "send": "^0.7.0"
   }
 }

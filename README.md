@@ -1,6 +1,6 @@
 # deliver
 
-Deliver local and remote static files.
+Serve local and remote static files.
 
 ## Install
 
@@ -44,11 +44,12 @@ http.createServer(function (req, res) {
 
 ## deliver(path[, options])
 
-Returns a stream
+Returns a stream almost identical to the [`send` module](https://www.npmjs.org/package/send). That means you can listen to the same events (i.e. *directory*, *error*, etc).
 
 * `path` - the path, relative or an http url, of the file to server
 * `options`
   * `root` - set the root directory that holds the static files to serve
+  * `index` - set a custom index file. Pass `false` to disable or pass a string or array of strings for a custom index file.
   * `statusCode` - override the status code
   * `contentType` - override the content type
   

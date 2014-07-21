@@ -1,8 +1,9 @@
-var path = require('path');
 var send = require('send');
 var defaults = require('defaults');
 var request = require('request');
 var isUrl = require('is-url');
+var url = require('fast-url-parser');
+var mime = require('mime-types');
 
 var defaultOptions = {
   statusCode: 200,
@@ -14,12 +15,10 @@ var deliver = function (req) {
   
   if (isUrl(req.url)) return request(req.url).on('response', function (res) {
     if (options.statusCode) res.statusCode = options.statusCode;
-    if (options.contentType) res.headers['content-type'] = options.contentType;
+    if (options.contentType) res.headers['content-type'] = options.contentType || mime.lookup(req.url);
   });
   
-  req.url = path.join(options.root, req.url);
-  
-  return send(req, req.url);
+  return send(req, url.parse(req.url).pathname, options);
 };
 
 module.exports = deliver;

@@ -50,6 +50,37 @@ test('serves static with mime type', function (t) {
   });
 });
 
+test('streams the index file of a directory', function (t) {
+  var server = createServer(function (req, res) {
+    req.url = '/';
+    deliver(req, {
+      root: __dirname + '/fixtures'
+    }).pipe(res);
+  }, function (err) {
+    get('http://localhost:' + PORT, function (err, resp, body) {
+      t.equal(body, 'index', 'served index file');
+      server.close();
+      t.end();
+    });
+  });
+});
+
+test('serves a custom index file from a directory', function (t) {
+  var server = createServer(function (req, res) {
+    req.url = '/';
+    deliver(req, {
+      root: __dirname + '/fixtures',
+      index: 'testfile1.txt'
+    }).pipe(res);
+  }, function (err) {
+    get('http://localhost:' + PORT, function (err, resp, body) {
+      t.equal(body, 'testfile1', 'served index file');
+      server.close();
+      t.end();
+    });
+  });
+});
+
 test('serves a proxied remote file by url', function (t) {
   var fileServer = createServer(function (req, res) {
     res.setHeader('content-type', 'text/plain; charset=UTF-8');
@@ -94,6 +125,8 @@ test('serves a proxied remote file with a custom response status code', function
     });
   }, 9875);
 });
+
+// TODO: test that it proxies a directories index.html file
 
 test('serves a proxied remote file with a custom content mime type', function (t) {
   var fileServer = createServer(function (req, res) {
