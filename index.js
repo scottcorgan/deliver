@@ -15,7 +15,10 @@ var deliver = function (req) {
   var options = defaults(arguments[1], defaultOptions);
   
   if (isUrl(options.root)) {
-    return request(urlJoin(options.root, req.url)).on('response', function (res) {
+    delete req.headers.host;
+    return request(urlJoin(options.root, req.url), {
+      headers: req.headers
+    }).on('response', function (res) {
       if (options.statusCode) res.statusCode = options.statusCode;
       
       res.headers['content-type'] = options.contentType || mime.lookup(req.url)

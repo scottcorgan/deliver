@@ -134,6 +134,8 @@ test('serves a proxied remote file with a custom response status code', function
 // });
 
 // TODO: test that it proxies a directories index.html file
+// 
+// TODO: test passing the headers through
 
 test('serves a proxied remote file with a custom content mime type', function (t) {
   var fileServer = createServer(function (req, res) {
