@@ -20,7 +20,9 @@ http.createServer(function (req, res) {
   // Conditionally set the request url
   req.url = '/some';
   
-  deliver(req).pipe(res);
+  deliver(req, {
+    root: process.cwd() // OPTIONAL
+  }).pipe(res);
   
 }).listen(3000);
 ```
@@ -33,9 +35,10 @@ var http = require('http');
 
 http.createServer(function (req, res) {
   // Conditionally set the request url
-  req.url = 'http://www.somewhere.com/somefile.html';
+  req.url = '/somefile.html';
   
   deliver(req, {
+    root: 'http://www.somewhere.com',
     statusCode: 404
   }).pipe(res);
   
@@ -48,7 +51,7 @@ Returns a stream almost identical to the [`send` module](https://www.npmjs.org/p
 
 * `req` - the request object
 * `options`
-  * `root` - set the root directory that holds the static files to serve
+  * `root` - set the root directory that holds the static files to serve. This can be a path or a url
   * `index` - set a custom index file. Pass `false` to disable or pass a string or array of strings for a custom index file.
   * `statusCode` - override the status code
   * `contentType` - override the content type

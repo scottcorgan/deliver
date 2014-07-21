@@ -87,8 +87,10 @@ test('serves a proxied remote file by url', function (t) {
     fs.createReadStream('test/fixtures/testfile1.txt').pipe(res);
   }, function () {
     var server = createServer(function (req, res) {
-      req.url = 'http://localhost:9875/testfile1.txt';
-      deliver(req).pipe(res);
+      req.url = '/testfile1.txt';
+      deliver(req, {
+        root: 'http://localhost:9875'
+      }).pipe(res);
     }, function (err) {
       get('http://localhost:' + PORT, function (err, resp, body) {
         t.equal(resp.statusCode, 200, '200 status code');
@@ -108,10 +110,11 @@ test('serves a proxied remote file with a custom response status code', function
     fs.createReadStream('test/fixtures/testfile1.txt').pipe(res);
   }, function () {
     var server = createServer(function (req, res) {
-      req.url = 'http://localhost:9875/testfile1.txt';
+      req.url = '/testfile1.txt';
       res.statusCode = 404;
       
       deliver(req, {
+        root: 'http://localhost:9875',
         statusCode: 404
       }).pipe(res);
       
@@ -137,11 +140,12 @@ test('serves a proxied remote file with a custom content mime type', function (t
     fs.createReadStream('test/fixtures/testfile1.txt').pipe(res);
   }, function () {
     var server = createServer(function (req, res) {
-      req.url = 'http://localhost:9875/testfile1.txt';
+      req.url = '/testfile1.txt';
       res.statusCode = 404;
       
       deliver(req, {
-        contentType: 'text/html'
+        contentType: 'text/html',
+        root: 'http://localhost:9875'
       }).pipe(res);
       
     }, function (err) {

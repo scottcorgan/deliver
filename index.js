@@ -4,6 +4,7 @@ var request = require('request');
 var isUrl = require('is-url');
 var url = require('fast-url-parser');
 var mime = require('mime-types');
+var urlJoin = require('url-join');
 
 var defaultOptions = {
   statusCode: 200,
@@ -13,10 +14,12 @@ var defaultOptions = {
 var deliver = function (req) {
   var options = defaults(arguments[1], defaultOptions);
   
-  if (isUrl(req.url)) return request(req.url).on('response', function (res) {
-    if (options.statusCode) res.statusCode = options.statusCode;
-    if (options.contentType) res.headers['content-type'] = options.contentType || mime.lookup(req.url);
-  });
+  if (isUrl(options.root)) {
+    return request(urlJoin(options.root, req.url)).on('response', function (res) {
+      if (options.statusCode) res.statusCode = options.statusCode;
+      if (options.contentType) res.headers['content-type'] = options.contentType || mime.lookup(req.url);
+    });
+  }
   
   return send(req, url.parse(req.url).pathname, options);
 };
