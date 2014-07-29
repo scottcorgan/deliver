@@ -21,7 +21,7 @@ var deliver = function (req) {
       headers: req.headers
     }).on('response', function (res) {
       if (options.statusCode) res.statusCode = options.statusCode;
-      res.headers['content-type'] = options.contentType || mime.lookup(req.url)
+      res.headers['content-type'] = options.contentType || mime.lookup(req.url.split('?')[0])
     });
   }
   

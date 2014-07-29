@@ -39,11 +39,11 @@ test('serves static files with root', function (t) {
 
 test('serves static with mime type', function (t) {
   var server = createServer(function (req, res) {
-    req.url = __dirname + '/fixtures/testfile1.txt';
+    req.url = __dirname + '/fixtures/testing.jpg?asdf=asdf&wefwef=asdasd';
     deliver(req).pipe(res);
   }, function (err) {
     get('http://localhost:' + PORT, function (err, resp, body) {
-      t.equal(resp.headers['content-type'], 'text/plain; charset=UTF-8', 'correct mime type');
+      t.equal(resp.headers['content-type'], 'image/jpeg', 'correct mime type');
       server.close();
       t.end();
     });

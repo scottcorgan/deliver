@@ -4,7 +4,7 @@
   "description": "Deliver local and remote static files",
   "main": "index.js",
   "scripts": {
-    "test": "node test/index.js | node_modules/.bin/tspec"
+    "test": "node test/index.js | tap-spec"
   },
   "repository": {
     "type": "git",
