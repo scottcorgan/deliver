@@ -1,6 +1,6 @@
 {
   "name": "deliver",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "Deliver local and remote static files",
   "main": "index.js",
   "scripts": {
@@ -32,7 +32,7 @@
     "fast-url-parser": "^1.0.6-0",
     "is-url": "~1.1.0",
     "mime-types": "^1.0.1",
-    "request": "^2.36.0",
+    "request": "^2.40.0",
     "send": "^0.7.0",
     "url-join": "0.0.1"
   }
