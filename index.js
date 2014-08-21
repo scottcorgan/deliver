@@ -16,7 +16,14 @@ var deliver = function (req) {
   
   // Remote
   if (isUrl(options.root)) {
+    
+    console.log('TEST: is url');
+    console.log('TEST: url proxy request: ' + urlJoin(options.root, req.url));
+    console.log('TEST: options', options);
+    console.log('TEST: req.url: ' + req.url);
+    
     delete req.headers.host;
+    
     return request(urlJoin(options.root, req.url), {
       headers: req.headers
     }).on('response', function (res) {
