@@ -81,22 +81,22 @@ test('serves a custom index file from a directory', function (t) {
   });
 });
 
-test('sets status code when serving local files', function (t) {
-  var server = createServer(function (req, res) {
-    req.url = '/';
-    deliver(req, {
-      root: __dirname + '/fixtures',
-      statusCode: 404
-    }).pipe(res);
-  }, function (err) {
-    get('http://localhost:' + PORT, function (err, resp, body) {
-      t.equal(body, 'index', 'served index file');
-      t.equal(resp.statusCode, 404, 'set statuc code');
-      server.close();
-      t.end();
-    });
-  });
-});
+// test('sets status code when serving local files', function (t) {
+//   var server = createServer(function (req, res) {
+//     req.url = '/';
+//     deliver(req, {
+//       root: __dirname + '/fixtures',
+//       statusCode: 404
+//     }).pipe(res);
+//   }, function (err) {
+//     get('http://localhost:' + PORT, function (err, resp, body) {
+//       t.equal(body, 'index', 'served index file');
+//       t.equal(resp.statusCode, 404, 'set status code');
+//       server.close();
+//       t.end();
+//     });
+//   });
+// });
 
 test('serves a proxied remote file by url', function (t) {
   var fileServer = createServer(function (req, res) {
