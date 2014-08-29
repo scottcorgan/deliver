@@ -14,15 +14,8 @@ var defaultOptions = {
 var deliver = function (req) {
   var options = defaults(arguments[1], defaultOptions);
   
-  console.log('TEST: req.url: ' + req.url);
-  console.log('TEST: options', options);
-  
   // Remote
   if (isUrl(options.root)) {
-    
-    console.log('TEST: is url');
-    console.log('TEST: url proxy request: ' + urlJoin(options.root, req.url));
-    
     delete req.headers.host;
     
     return request(urlJoin(options.root, req.url), {
