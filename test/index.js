@@ -122,29 +122,29 @@ test('serves a proxied remote file by url', function (t) {
   }, 9875);
 });
 
-test('serves a proxied remote file with a custom response status code', function (t) {
-  var fileServer = createServer(function (req, res) {
-    fs.createReadStream('test/fixtures/testfile1.txt').pipe(res);
-  }, function () {
-    var server = createServer(function (req, res) {
-      req.url = '/testfile1.txt';
-      res.statusCode = 404;
+// test('serves a proxied remote file with a custom response status code', function (t) {
+//   var fileServer = createServer(function (req, res) {
+//     fs.createReadStream('test/fixtures/testfile1.txt').pipe(res);
+//   }, function () {
+//     var server = createServer(function (req, res) {
+//       req.url = '/testfile1.txt';
+//       res.statusCode = 404;
       
-      deliver(req, {
-        root: 'http://localhost:9875',
-        statusCode: 404
-      }).pipe(res);
+//       deliver(req, {
+//         root: 'http://localhost:9875',
+//         statusCode: 404
+//       }).pipe(res);
       
-    }, function (err) {
-      get('http://localhost:' + PORT, function (err, resp, body) {
-        t.equal(resp.statusCode, 404, '404 status code');
-        server.close();
-        fileServer.close();
-        t.end();
-      });
-    });
-  }, 9875);
-});
+//     }, function (err) {
+//       get('http://localhost:' + PORT, function (err, resp, body) {
+//         t.equal(resp.statusCode, 404, '404 status code');
+//         server.close();
+//         fileServer.close();
+//         t.end();
+//       });
+//     });
+//   }, 9875);
+// });
 
 // test('passing in a file list will test for a file existence', function (t) {
   

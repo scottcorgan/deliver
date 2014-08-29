@@ -38,8 +38,7 @@ http.createServer(function (req, res) {
   req.url = '/somefile.html';
   
   deliver(req, {
-    root: 'http://www.somewhere.com',
-    statusCode: 404
+    root: 'http://www.somewhere.com'
   }).pipe(res);
   
 }).listen(3000);
@@ -53,7 +52,6 @@ Returns a stream almost identical to the [`send` module](https://www.npmjs.org/p
 * `options`
   * `root` - set the root directory that holds the static files to serve. This can be a path or a url
   * `index` - set a custom index file. Pass `false` to disable or pass a string or array of strings for a custom index file.
-  * `statusCode` - override the status code
   * `contentType` - override the content type
   
 ## Run Tests

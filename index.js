@@ -21,7 +21,6 @@ var deliver = function (req) {
     return request(urlJoin(options.root, req.url), {
       headers: req.headers
     }).on('response', function (res) {
-      if (options.statusCode) res.statusCode = options.statusCode;
       res.headers['content-type'] = options.contentType || mime.lookup(req.url.split('?')[0])
     });
   }
@@ -29,11 +28,13 @@ var deliver = function (req) {
   // Local
   var sendStream = send(req, url.parse(req.url).pathname, options);
   
-  if (options.statusCode) {
-    sendStream.on('headers', function (res, path, stat) {
-      res.statusCode = options.statusCode;
-    });
-  }
+  // TODO: add this back when we can figure out
+  //       how to set the status code in the proxy portion
+  // if (options.statusCode) {
+  //   sendStream.on('headers', function (res, path, stat) {
+  //     res.statusCode = options.statusCode;
+  //   });
+  // }
   
   return sendStream;
 };
