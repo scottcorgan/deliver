@@ -23,14 +23,17 @@ var deliver = function (req, res, _options) {
     
     onHeaders(res, function () {
       res.setHeader('content-type', options.contentType || mime.lookup(req.url.split('?')[0]));
-      res.setHeader('content-encoding', 'gzip');
+      if (options.gzip) res.setHeader('content-encoding', 'gzip');
     });
     
-    return request({
+    var r = request({
       uri: urlJoin(options.root, req.url),
       headers: req.headers
-    })
-      .pipe(zlib.createGzip());
+    });
+    
+    if (options.gzip) return r.pipe(zlib.createGzip());
+    
+    return r;
   }
   
   // Local

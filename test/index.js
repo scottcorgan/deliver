@@ -4,13 +4,14 @@ var test = require('tape');
 var connect = require('connect');
 var http = require('http');
 var request = require('request');
+var pako = require('pako');
 var PORT = 9876;
 
 test('streams a static file', function (t) {
   var server = createServer(function (req, res) {
     req.url = __dirname + '/fixtures/testfile1.txt';
     
-    deliver(req).pipe(res);
+    deliver(req, res).pipe(res);
   }, function (err) {
     get('http://localhost:' + PORT, function (err, res, body) {
       t.equal(res.statusCode, 200, 'successful response');
@@ -24,7 +25,7 @@ test('streams a static file', function (t) {
 test('serves static files with root', function (t) {
   var server = createServer(function (req, res) {
     req.url = '/testfile1.txt';
-    deliver(req, {
+    deliver(req, res, {
       root: __dirname + '/fixtures'
     }).pipe(res);
   }, function (err) {
@@ -40,7 +41,7 @@ test('serves static files with root', function (t) {
 test('serves static with mime type', function (t) {
   var server = createServer(function (req, res) {
     req.url = __dirname + '/fixtures/testing.jpg?asdf=asdf&wefwef=asdasd';
-    deliver(req).pipe(res);
+    deliver(req, res).pipe(res);
   }, function (err) {
     get('http://localhost:' + PORT, function (err, resp, body) {
       t.equal(resp.headers['content-type'], 'image/jpeg', 'correct mime type');
@@ -53,7 +54,7 @@ test('serves static with mime type', function (t) {
 test('streams the index file of a directory', function (t) {
   var server = createServer(function (req, res) {
     req.url = '/';
-    deliver(req, {
+    deliver(req, res, {
       root: __dirname + '/fixtures'
     }).pipe(res);
   }, function (err) {
@@ -68,7 +69,7 @@ test('streams the index file of a directory', function (t) {
 test('serves a custom index file from a directory', function (t) {
   var server = createServer(function (req, res) {
     req.url = '/';
-    deliver(req, {
+    deliver(req, res, {
       root: __dirname + '/fixtures',
       index: 'testfile1.txt'
     }).pipe(res);
@@ -84,7 +85,7 @@ test('serves a custom index file from a directory', function (t) {
 // test('sets status code when serving local files', function (t) {
 //   var server = createServer(function (req, res) {
 //     req.url = '/';
-//     deliver(req, {
+//     deliver(req, res, {
 //       root: __dirname + '/fixtures',
 //       statusCode: 404
 //     }).pipe(res);
@@ -105,7 +106,7 @@ test('serves a proxied remote file by url', function (t) {
   }, function () {
     var server = createServer(function (req, res) {
       req.url = '/index.html';
-      deliver(req, {
+      deliver(req, res, {
         root: 'http://localhost:9875'
       }).pipe(res);
     }, function (err) {
@@ -130,7 +131,7 @@ test('serves a proxied remote file by url', function (t) {
 //       req.url = '/testfile1.txt';
 //       res.statusCode = 404;
       
-//       deliver(req, {
+//       deliver(req, res, {
 //         root: 'http://localhost:9875',
 //         statusCode: 404
 //       }).pipe(res);
@@ -162,7 +163,7 @@ test('serves a proxied remote file with a custom content mime type', function (t
       req.url = '/testfile1.txt';
       res.statusCode = 404;
       
-      deliver(req, {
+      deliver(req, res, {
         contentType: 'text/html',
         root: 'http://localhost:9875'
       }).pipe(res);
@@ -176,6 +177,32 @@ test('serves a proxied remote file with a custom content mime type', function (t
       });
     });
   }, 9875);
+});
+
+test('servers proxied remote file gzipped', function (t) {
+  var fileServer = createServer(function (req, res) {
+    fs.createReadStream('test/fixtures/testfile1.txt').pipe(res);
+  }, function () {
+    var server = createServer(function (req, res) {
+      req.url = '/testfile1.txt';
+      res.statusCode = 404;
+      
+      deliver(req, res, {
+        gzip: true,
+        root: 'http://localhost:9875'
+      }).pipe(res);
+      
+    }, function (err) {
+      get('http://localhost:' + PORT, function (err, resp, body) {
+        // TODO: test actually gzipped response instead
+        // of just headers
+        t.equal(resp.headers['content-encoding'], 'gzip', 'gzipped header');
+        server.close();
+        fileServer.close();
+        t.end();
+      });
+    });
+  }, 9875);  
 });
 
 //
