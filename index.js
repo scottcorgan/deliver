@@ -1,28 +1,36 @@
 var send = require('send');
 var defaults = require('defaults');
-var request = require('request');
+var request = require('hyperquest');
 var isUrl = require('is-url');
 var url = require('fast-url-parser');
 var mime = require('mime-types');
 var urlJoin = require('url-join');
+var zlib = require('zlib');
+var onHeaders = require('on-headers');
 
 var defaultOptions = {
   statusCode: 200,
   root: ''
 };
 
-var deliver = function (req) {
-  var options = defaults(arguments[1], defaultOptions);
+var deliver = function (req, res, _options) {
+  var options = defaults(_options, defaultOptions);
   
   // Remote
   if (isUrl(options.root)) {
     delete req.headers.host;
+    delete req.headers['accept-encoding'];
     
-    return request(urlJoin(options.root, req.url), {
-      headers: req.headers
-    }).on('response', function (res) {
-      res.headers['content-type'] = options.contentType || mime.lookup(req.url.split('?')[0])
+    onHeaders(res, function () {
+      res.setHeader('content-type', options.contentType || mime.lookup(req.url.split('?')[0]));
+      res.setHeader('content-encoding', 'gzip');
     });
+    
+    return request({
+      uri: urlJoin(options.root, req.url),
+      headers: req.headers
+    })
+      .pipe(zlib.createGzip());
   }
   
   // Local
