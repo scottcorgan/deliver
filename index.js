@@ -23,7 +23,7 @@ var deliver = function (req, res, _options) {
     
     onHeaders(res, function () {
       res.setHeader('content-type', options.contentType || mime.lookup(req.url.split('?')[0]));
-      if (options.gzip) res.setHeader('content-encoding', 'gzip');
+      if (options.gzip !== false) res.setHeader('content-encoding', 'gzip');
     });
     
     var r = request({
@@ -31,7 +31,7 @@ var deliver = function (req, res, _options) {
       headers: req.headers
     });
     
-    if (options.gzip) return r.pipe(zlib.createGzip());
+    if (options.gzip !== false) return r.pipe(zlib.createGzip());
     
     return r;
   }

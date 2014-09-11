@@ -107,7 +107,8 @@ test('serves a proxied remote file by url', function (t) {
     var server = createServer(function (req, res) {
       req.url = '/index.html';
       deliver(req, res, {
-        root: 'http://localhost:9875'
+        root: 'http://localhost:9875',
+        gzip: false
       }).pipe(res);
     }, function (err) {
       get('http://localhost:' + PORT, function (err, resp, body) {
@@ -165,7 +166,8 @@ test('serves a proxied remote file with a custom content mime type', function (t
       
       deliver(req, res, {
         contentType: 'text/html',
-        root: 'http://localhost:9875'
+        root: 'http://localhost:9875',
+        gzip: false
       }).pipe(res);
       
     }, function (err) {
@@ -188,7 +190,6 @@ test('servers proxied remote file gzipped', function (t) {
       res.statusCode = 404;
       
       deliver(req, res, {
-        gzip: true,
         root: 'http://localhost:9875'
       }).pipe(res);
       
