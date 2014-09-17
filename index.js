@@ -22,7 +22,7 @@ var deliver = function (req, res, _options) {
       // Delete a header if the value passed in is null
       if (headers[key] === null && req.headers[key]) delete req.headers[key];
       else if (headers[key] === null && req.headers[key.toLowerCase()]) delete req.headers[key.toLowerCase()];
-      else req.headers[key] = headers[key];
+      else if (headers[key]) req.headers[key] = headers[key];
     });
   }
   
