@@ -17,6 +17,7 @@ var deliver = function (req, res, _options) {
   var options = defaults(_options, defaultOptions);
   var headers = options.headers;
   
+  // Add/remove specified headers
   if (headers) {
     Object.keys(headers).forEach(function (key) {
       // Delete a header if the value passed in is null
@@ -25,6 +26,9 @@ var deliver = function (req, res, _options) {
       else if (headers[key]) req.headers[key] = headers[key];
     });
   }
+  
+  // Remove all headers
+  if (headers === null) req.headers = {};
   
   // Remote
   if (isUrl(options.root)) {
