@@ -15,6 +15,16 @@ var defaultOptions = {
 
 var deliver = function (req, res, _options) {
   var options = defaults(_options, defaultOptions);
+  var headers = options.headers;
+  
+  if (headers) {
+    Object.keys(headers).forEach(function (key) {
+      // Delete a header if the value passed in is null
+      if (headers[key] === null && req.headers[key]) delete req.headers[key];
+      else if (headers[key] === null && req.headers[key.toLowerCase()]) delete req.headers[key.toLowerCase()];
+      else req.headers[key] = headers[key];
+    });
+  }
   
   // Remote
   if (isUrl(options.root)) {

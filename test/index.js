@@ -206,6 +206,72 @@ test('servers proxied remote file gzipped', function (t) {
   }, 9875);  
 });
 
+test('adds custom headers from request to remote file', function (t) {
+  var r;
+  
+  var fileServer = createServer(function (req, res) {
+    fs.createReadStream('test/fixtures/testfile1.txt').pipe(res);
+  }, function () {
+    var server = createServer(function (req, res) {
+      r = req;
+      
+      req.url = '/testfile1.txt';
+      res.statusCode = 404;
+      
+      deliver(req, res, {
+        root: 'http://localhost:9875',
+        gzip: false,
+        headers: {
+          test: 'test header'
+        }
+      }).pipe(res);
+      
+    }, function (err) {
+      get('http://localhost:' + PORT, function (err, resp, body) {
+        t.equal(r.headers.test, 'test header', 'removed test header');
+        
+        server.close();
+        fileServer.close();
+        t.end();
+      });
+    });
+  }, 9875);  
+});
+
+test('removes headers from request to remote file', function (t) {
+  var r;
+  
+  var fileServer = createServer(function (req, res) {
+    fs.createReadStream('test/fixtures/testfile1.txt').pipe(res);
+  }, function () {
+    var server = createServer(function (req, res) {
+      r = req;
+      
+      req.url = '/testfile1.txt';
+      res.statusCode = 404;
+      
+      req.headers.test = 'test header';
+      
+      deliver(req, res, {
+        root: 'http://localhost:9875',
+        gzip: false,
+        headers: {
+          test: null
+        }
+      }).pipe(res);
+      
+    }, function (err) {
+      get('http://localhost:' + PORT, function (err, resp, body) {
+        t.equal(r.headers.test, undefined, 'removed test header');
+        
+        server.close();
+        fileServer.close();
+        t.end();
+      });
+    });
+  }, 9875);  
+});
+
 //
 function createServer (testMiddleware, callback, _port) {
   var app = connect();
