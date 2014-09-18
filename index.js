@@ -43,6 +43,11 @@ var deliver = function (req, res, _options) {
     var r = request({
       uri: urlJoin(options.root, req.url),
       headers: req.headers
+    }, function (err, rr) {
+      if (err) return;
+      
+      // TODO: test this
+      res.emit('content-length', rr.headers ? rr.headers['content-length'] : 0);
     });
     
     if (options.gzip !== false) return r.pipe(zlib.createGzip());
