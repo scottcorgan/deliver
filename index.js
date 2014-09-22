@@ -7,13 +7,14 @@ var mime = require('mime-types');
 var urlJoin = require('url-join');
 var zlib = require('zlib');
 var onHeaders = require('on-headers');
+var compressible = require('compressible');
 
 var defaultOptions = {
   statusCode: 200,
   root: ''
 };
 
-var deliver = function (req, res, _options) {
+var deliver = function (req, res, _options, done) {
   var options = defaults(_options, defaultOptions);
   var headers = options.headers;
   
@@ -32,12 +33,12 @@ var deliver = function (req, res, _options) {
   
   // Remote
   if (isUrl(options.root)) {
-    delete req.headers.host;
-    delete req.headers['accept-encoding'];
+    var contentType = options.contentType || mime.lookup(req.url.split('?')[0]);
+    var isCompressible = compressible(contentType);
     
     onHeaders(res, function () {
-      res.setHeader('content-type', options.contentType || mime.lookup(req.url.split('?')[0]));
-      if (options.gzip !== false) res.setHeader('content-encoding', 'gzip');
+      res.setHeader('content-type', contentType);
+      if (options.gzip !== false && isCompressible) res.setHeader('content-encoding', 'gzip');
     });
     
     var r = request({
@@ -50,7 +51,7 @@ var deliver = function (req, res, _options) {
       res.emit('content-length', rr.headers ? rr.headers['content-length'] : 0);
     });
     
-    if (options.gzip !== false) return r.pipe(zlib.createGzip());
+    if (options.gzip !== false && isCompressible) return r.pipe(zlib.createGzip());
     
     return r;
   }
