@@ -37,7 +37,7 @@ var deliver = function (req, res, _options, done) {
     var isCompressible = compressible(contentType);
     
     onHeaders(res, function () {
-      if (!res.getHeader('content-type') {
+      if (!res.getHeader('content-type')) {
         res.setHeader('content-type', contentType);
       }
       
