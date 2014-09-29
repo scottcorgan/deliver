@@ -36,11 +36,14 @@ var deliver = function (req, res, _options, done) {
     var contentType = options.contentType || mime.lookup(req.url.split('?')[0]);
     var isCompressible = compressible(contentType);
     
-    res.setHeader('content-type', contentType);
-    
     onHeaders(res, function () {
-      // res.setHeader('content-type', contentType);
-      if (options.gzip !== false && isCompressible) res.setHeader('content-encoding', 'gzip');
+      if (!res.getHeader('content-type') {
+        res.setHeader('content-type', contentType);
+      }
+      
+      if (options.gzip !== false && isCompressible) {
+        res.setHeader('content-encoding', 'gzip');
+      }
     });
     
     var r = request({
