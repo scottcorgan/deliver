@@ -14,8 +14,6 @@ var defaultOptions = {
   root: ''
 };
 
-console.log(mime.contentType(mime.lookup('me.css')));
-
 var deliver = function (req, res, _options, done) {
   var options = defaults(_options, defaultOptions);
   var headers = options.headers;
