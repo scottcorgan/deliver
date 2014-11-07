@@ -4,7 +4,7 @@ var request = require('hyperquest');
 var isUrl = require('is-url');
 var url = require('fast-url-parser');
 var mime = require('mime-types');
-var urlJoin = require('url-join');
+var join = require('join-path');
 var zlib = require('zlib');
 var onHeaders = require('on-headers');
 var compressible = require('compressible');
@@ -13,6 +13,8 @@ var defaultOptions = {
   statusCode: 200,
   root: ''
 };
+
+console.log(mime.contentType(mime.lookup('me.css')));
 
 var deliver = function (req, res, _options, done) {
   var options = defaults(_options, defaultOptions);
@@ -38,6 +40,13 @@ var deliver = function (req, res, _options, done) {
     
     onHeaders(res, function () {
       if (!res.getHeader('content-type')) {
+        
+        // Ensure utf-8 charset in content-type header
+        // for content types that start with "text/" like "text/html"
+        if (/^text\//.test(contentType)) {
+          contentType = mime.contentType(contentType);
+        }
+        
         res.setHeader('content-type', contentType);
       }
       
@@ -47,7 +56,7 @@ var deliver = function (req, res, _options, done) {
     });
     
     var r = request({
-      uri: urlJoin(options.root, req.url),
+      uri: join(options.root, req.url),
       headers: req.headers
     }, function (err, rr) {
       if (err) return;

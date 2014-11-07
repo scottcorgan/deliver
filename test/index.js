@@ -101,7 +101,7 @@ test('serves a custom index file from a directory', function (t) {
 
 test('serves a proxied remote file by url', function (t) {
   var fileServer = createServer(function (req, res) {
-    res.setHeader('content-type', 'text/html; charset=UTF-8');
+    res.setHeader('content-type', 'text/html; charset=utf-8');
     fs.createReadStream('test/fixtures/index.html').pipe(res);
   }, function () {
     var server = createServer(function (req, res) {
@@ -113,7 +113,7 @@ test('serves a proxied remote file by url', function (t) {
     }, function (err) {
       get('http://localhost:' + PORT, function (err, resp, body) {
         t.equal(resp.statusCode, 200, '200 status code');
-        t.equal(resp.headers['content-type'], 'text/html', 'correct mime type');
+        t.equal(resp.headers['content-type'], 'text/html; charset=utf-8', 'correct mime type');
         t.equal(body, 'index', 'streamed remote file');
         
         server.close();
@@ -172,7 +172,7 @@ test('serves a proxied remote file with a custom content mime type', function (t
       
     }, function (err) {
       get('http://localhost:' + PORT, function (err, resp, body) {
-        t.equal(resp.headers['content-type'], 'text/html', 'correct mime type');
+        t.equal(resp.headers['content-type'], 'text/html; charset=utf-8', 'correct mime type');
         server.close();
         fileServer.close();
         t.end();
