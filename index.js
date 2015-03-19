@@ -8,6 +8,7 @@ var join = require('join-path');
 var zlib = require('zlib');
 var onHeaders = require('on-headers');
 var compressible = require('compressible');
+var accepts = require('accepts');
 
 var defaultOptions = {
   statusCode: 200,
@@ -28,6 +29,15 @@ var deliver = function (req, res, _options, done) {
     });
   }
   
+  // compression method
+  var accept = accepts(req);
+  var method = accept.encoding(['gzip', 'deflate', 'identity']);
+  
+  // we really don't prefer deflate
+  if (method === 'deflate' && accept.encoding(['gzip'])) {
+    method = accept.encoding(['gzip', 'identity']);
+  }
+  
   // Remove all headers
   if (headers === null) req.headers = {};
   
@@ -37,7 +47,7 @@ var deliver = function (req, res, _options, done) {
     var isCompressible = compressible(contentType);
     
     onHeaders(res, function () {
-      if (!res.getHeader('content-type')) {
+      if (!res.getHeader('Content-Type')) {
         
         // Ensure utf-8 charset in content-type header
         // for content types that start with "text/" like "text/html"
@@ -45,11 +55,16 @@ var deliver = function (req, res, _options, done) {
           contentType = mime.contentType(contentType);
         }
         
-        res.setHeader('content-type', contentType);
+        res.setHeader('Content-Type', contentType);
+        
       }
       
-      if (options.gzip !== false && isCompressible) {
-        res.setHeader('content-encoding', 'gzip');
+      res.setHeader('Content-Encoding', method);
+      
+      // Remove content length header because it's not needed
+      // when the repsonse is chunked to the browser
+      if (method === 'gzip') {
+        res.removeHeader('Content-Length');
       }
     });
     
@@ -63,9 +78,10 @@ var deliver = function (req, res, _options, done) {
       res.emit('content-length', rr.headers ? rr.headers['content-length'] : 0);
     });
     
-    if (options.gzip !== false && isCompressible) return r.pipe(zlib.createGzip());
-    
-    return r;
+    // Handle inflate/deflate response stream
+    return (method === 'gzip' && options.gzip !== false)
+      ? r.pipe(zlib.createGzip())
+      : r;
   }
   
   // Local

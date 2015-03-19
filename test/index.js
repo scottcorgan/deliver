@@ -194,7 +194,7 @@ test('servers proxied remote file gzipped', function (t) {
       }).pipe(res);
       
     }, function (err) {
-      get('http://localhost:' + PORT, function (err, resp, body) {
+      get('http://localhost:' + PORT, {headers: {'accept-encoding': 'gzip'}}, function (err, resp, body) {
         // TODO: test actually gzipped response instead
         // of just headers
         t.equal(resp.headers['content-encoding'], 'gzip', 'gzipped header');
@@ -311,7 +311,13 @@ function createServer (testMiddleware, callback, _port) {
   return http.createServer(app).listen(_port || PORT, callback);
 }
 
-function get (url, callback) {
+function get (url, options, callback) {
+  
+  if (typeof options === 'function') {
+    callback = options;
+    options = {};
+  }
+  
   var body = '';
-  return request(url, callback);
+  return request(url, options, callback);
 }
